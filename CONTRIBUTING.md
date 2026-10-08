@@ -22,6 +22,8 @@ is a shorter orientation.
 
 ## Checks to run before you push
 
-Once this repo has code, its checks are listed in `AGENTS.md` and run in CI.
-A change that breaks any of them is not ready. Until then, keep commits to
-documentation and hygiene so the history stays honest.
+Run `npm run lint`, `npm run typecheck`, `npm test -- --maxWorkers=1`, and
+`npm run build`. Read [TESTING.md](TESTING.md) for coverage and limitations.
+Keep exact error wording aligned with the vendored contract ERRORS.md.
+Preserve testnet refusal, wallet account guards, unknown-outcome receipts,
+the deployment block and the second human custody review requirement.

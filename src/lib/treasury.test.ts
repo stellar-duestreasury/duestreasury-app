@@ -1,0 +1,23 @@
+import {describe,expect,it} from 'vitest';
+import {Keypair,StrKey,scValToNative} from '@stellar/stellar-sdk';
+import {account,addresses,createGroupArgs,decode,hash,list,MAX_I128,MAX_U64,positive,printable,tokenAddress,u64} from './treasury';
+const user=Keypair.random().publicKey();
+const token=StrKey.encodeContract(Buffer.alloc(32,3));
+describe('treasury input boundaries and ABI',()=>{
+ it.each(['','-1','1.2','1e2','0','one'])('rejects invalid integer %j',value=>expect(()=>positive(value)).toThrow());
+ it('accepts maximum atomic units without number coercion',()=>expect(positive(MAX_I128.toString())).toBe(MAX_I128));
+ it('rejects i128 overflow',()=>expect(()=>positive((MAX_I128+1n).toString())).toThrow());
+ it('rejects u64 overflow',()=>expect(()=>positive((MAX_U64+1n).toString(),MAX_U64)).toThrow());
+ it('preserves u64 encoded ids',()=>expect(scValToNative(u64(MAX_U64))).toBe(MAX_U64));
+ it('accepts a public account and refuses private-key input',()=>{expect(account(user)).toBe(user);expect(()=>account(Keypair.random().secret())).toThrow();});
+ it('rejects an account as a token contract',()=>{expect(tokenAddress(token)).toBe(token);expect(()=>tokenAddress(user)).toThrow();});
+ it('rejects duplicate signers',()=>expect(()=>addresses(`${user},${user}`,20)).toThrow());
+ it('enforces bounded lists',()=>expect(()=>addresses(Array.from({length:21},()=>Keypair.random().publicKey()).join(','),20)).toThrow());
+ it('encodes vectors of addresses',()=>expect(scValToNative(list([user]))).toEqual([user]));
+ it('accepts only bytes32 memo hashes',()=>{expect(Array.from(scValToNative(hash('ab'.repeat(32))) as Uint8Array)).toEqual(Array(32).fill(0xab));expect(()=>hash('personal description')).toThrow();});
+ it('encodes all seven create_group arguments in ABI order',()=>{const args=createGroupArgs(user,{token,members:user,signers:user,threshold:'1',dues:'100',period:'86400'});expect(args.map(scValToNative)).toEqual([user,token,[user],[user],1,100n,86400n]);});
+ it('rejects threshold above signer count',()=>expect(()=>createGroupArgs(user,{token,members:user,signers:user,threshold:'2',dues:'100',period:'1'})).toThrow());
+ it('rejects periods beyond366days',()=>expect(()=>createGroupArgs(user,{token,members:user,signers:user,threshold:'1',dues:'100',period:'31622401'})).toThrow());
+ it('rejects malformed contract records',()=>expect(()=>decode(u64(1n))).toThrow());
+ it('prints bigint balances without losing precision',()=>expect(printable({balance:MAX_I128})).toContain(MAX_I128.toString()));
+});

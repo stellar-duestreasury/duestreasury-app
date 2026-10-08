@@ -1,47 +1,9 @@
 # Roadmap
 
-What is next for `duestreasury-app`, in order. Anything not listed as done is
-**not implemented**.
+Implemented local v0: strict Vite/React/TypeScript app, environment-only testnet configuration, local Stellar wallet icons, ABI-driven group/member/signer operations, canonical errors, receipts, public source account reads, input tests, RPC refusal tests, render/axe check and CI.
 
-## Status
+Deliberately unimplemented: off-chain arrears reminders, CSV export, multilingual support, proposal index/full history export, and multi-party threshold cancellation coordination in the browser. The contract supports threshold cancellation with separately authorized signer addresses.
 
-- [x] Repository governance: AGENTS.md, CONTRIBUTING.md, ROADMAP.md, LICENSE,
-      .gitignore, .gitattributes (2026-10-01).
-- [ ] v0 app from the project's playbook section (screens below).
+Local verification on 2026-10-08: lint, strict typecheck, 46 tests across six files, and production build pass. The main JavaScript chunk is 780.98 kB (183.63 kB gzip), above Vite's 500 kB warning threshold. Dependencies were reused from the identical validated SchoolFees lock via an ignored local node_modules junction after a slow offline install was stopped; normal clean npm ci remains configured in CI. The lockfile audit reports 19 dependency findings: 13 low and six moderate, no high or critical. These are unresolved; no force upgrade was applied.
 
-## Next
-
-- [ ] Vite + React + TypeScript scaffold, strict mode, `.env`-only
-      configuration, testnet refusal paths.
-- [ ] Pages per `STELLAR-BUILD-PLAYBOOK-v3.md` section 7 (shared app
-      prompt in section 4; file present in
-      `~/Desktop/Drips/_reference/playbooks/`, confirmed 2026-10-02):
-      TESTNET banner on every screen, error mapping from the contract repo's
-      `ERRORS.md`, transaction hash and explorer link after every action,
-      local wallet icons, Stellar-only wallet kit module set, mobile-first
-      accessible markup.
-- [ ] Unit tests for pure logic in `src/lib/`; render tests with an automated
-      axe-core check (the schoolfees standard).
-- [ ] CI (`web.yml`): lint, type-check, tests, production build. Lands with
-      the first code that can pass it.
-
-## v0 screens (from playbook section 7)
-
-- Member: see dues status, pay dues.
-- Signer: create, approve and execute proposals, see the treasury balance.
-- Public: read-only view of the group's balance, proposals and history.
-
-Known app gaps, deliberately out of v0: arrears reminders (off-chain), CSV
-export for the group's records, multi-language support.
-
-## Decisions needed from Tim
-
-1. **Build standard — decided (2026-10-02).** v3 sections 4 and 7 are the
-   scope authority for what the app shows; v4 plus the schoolfees repos are
-   the standard for how it is built (doc set, AGENTS.md, CI, checkers).
-2. **Second reviewer.** Name the second human reviewer required before any funded test.
-
-## Explicitly out of scope
-
-Mainnet, any backend or database, analytics or trackers. Anything the v0
-design does not ask for.
+TODO(verify): deployed integration, real-wallet behavior, manual accessibility, and independent custody review. No deployment, funded test or pilot has occurred. Name a second human reviewer before funded testing. Mainnet, backend and analytics are out of scope.
