@@ -1,5 +1,10 @@
 # DuesTreasury app
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/brand/logo-dark.svg">
+  <img src="public/brand/logo.svg" alt="DuesTreasury" height="72">
+</picture>
+
 Local v0 wallet interface for fixed-member dues and threshold-approved treasury spending. **TESTNET — no real money. Unreviewed custody prototype. Deployment and funded testing remain blocked until a second human reviewer. No deployment or pilot is claimed.**
 
 Implemented screens: public group/proposal reads, current-period member status/payment, signer proposals/approvals/execution, proposer cancellation, and fixed group creation. Public reads simulate using an entered funded public testnet source; no signing or secret is needed. Amounts are whole token atomic units, not decimal display amounts. Proposal ids come from creation receipts: v0 has no proposal index or full historical export. Threshold cancellation needs multiple authorizers and is available in the contract, but not coordinated by this single-wallet browser.
